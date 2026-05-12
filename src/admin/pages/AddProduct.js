@@ -57,21 +57,27 @@ const AddProduct = () => {
     }
 
     setUploading(true);
-    const formData = new FormData();
-    files.forEach(file => {
-      formData.append('images', file);
-    });
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.post('/api/upload/images', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      // Convert images to Base64
+      const base64Images = await Promise.all(
+        files.map(file => {
+          return new Promise((resolve, reject) => {
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+              reject(new Error('حجم الصورة يجب أن يكون أقل من 2 ميجابايت'));
+              return;
+            }
 
-      setImages(prev => [...prev, ...response.data.images]);
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        })
+      );
+
+      setImages(prev => [...prev, ...base64Images]);
       Swal.fire({
         icon: 'success',
         title: 'تم الرفع!',
@@ -84,7 +90,7 @@ const AddProduct = () => {
       Swal.fire({
         icon: 'error',
         title: 'خطأ',
-        text: error.response?.data?.message || 'خطأ في رفع الصور',
+        text: error.message || 'خطأ في رفع الصور',
         confirmButtonColor: '#1F2937'
       });
     } finally {
@@ -321,7 +327,7 @@ const AddProduct = () => {
                   {images.map((image, index) => (
                     <div key={index} className="relative">
                       <img
-                        src={`http://localhost:5000${image}`}
+                        src={image}
                         alt={`Product ${index + 1}`}
                         className="w-full h-24 object-cover rounded-lg border"
                       />

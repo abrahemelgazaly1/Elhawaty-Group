@@ -33,7 +33,31 @@ const ElectronicTransfer = () => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setScreenshot(file);
+      // Check file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'تحذير',
+          text: 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت',
+          confirmButtonColor: '#C8A97E'
+        });
+        return;
+      }
+
+      // Convert to Base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        setScreenshot(reader.result);
+      };
+      reader.onerror = () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'خطأ',
+          text: 'فشل قراءة الصورة',
+          confirmButtonColor: '#C8A97E'
+        });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -53,25 +77,6 @@ const ElectronicTransfer = () => {
     e.preventDefault();
     
     try {
-      // رفع الصورة أولاً
-      let screenshotPath = '';
-      if (screenshot) {
-        const formDataImage = new FormData();
-        formDataImage.append('screenshot', screenshot);
-
-        const uploadResponse = await fetch('/api/upload/screenshot', {
-          method: 'POST',
-          body: formDataImage
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('فشل رفع الصورة');
-        }
-
-        const uploadData = await uploadResponse.json();
-        screenshotPath = uploadData.image;
-      }
-
       // إرسال البيانات إلى قاعدة البيانات
       const requestData = {
         name: formData.name,
@@ -86,7 +91,7 @@ const ElectronicTransfer = () => {
         recipient_name: activeTab === 'transfer' ? formData.recipientName : '',
         machine_type: activeTab === 'machine' ? formData.machineType : '',
         merchant_number: activeTab === 'machine' ? formData.merchantNumber : '',
-        screenshot: screenshotPath
+        screenshot: screenshot || '' // Base64 image
       };
 
       const response = await fetch('/api/requests/electronic', {
@@ -130,7 +135,7 @@ ${activeTab === 'transfer' ? '💳 طلب تحويل إلكتروني جديد' 
         `;
       }
 
-      if (screenshotPath) {
+      if (screenshot) {
         whatsappMessage += `\n📸 تم إرفاق صورة السكرين شوت`;
       }
 
@@ -374,7 +379,7 @@ ${activeTab === 'transfer' ? '💳 طلب تحويل إلكتروني جديد' 
                     >
                       <FiUpload className="text-5xl text-gray-400 mb-3" />
                       <span className="text-gray-600 font-medium">
-                        {screenshot ? screenshot.name : 'اضغط لرفع صورة السكرين شوت'}
+                        {screenshot ? 'تم رفع الصورة ✓' : 'اضغط لرفع صورة السكرين شوت'}
                       </span>
                     </label>
                   </div>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiHeart } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import QuickOrderModal from './QuickOrderModal';
 import Swal from 'sweetalert2';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [showQuickOrder, setShowQuickOrder] = useState(false);
 
   const handleQuickOrder = (e) => {
@@ -26,16 +28,16 @@ const ProductCard = ({ product }) => {
       
       Swal.fire({
         icon: 'success',
-        title: 'تمت الإضافة!',
-        text: 'تم إضافة المنتج إلى المفضلة ❤️',
+        title: t('addedToWishlist'),
+        text: t('productAddedToWishlist'),
         confirmButtonColor: '#C8A97E',
         timer: 2000
       });
     } else {
       Swal.fire({
         icon: 'info',
-        title: 'موجود بالفعل',
-        text: 'المنتج موجود بالفعل في المفضلة',
+        title: t('alreadyInWishlist'),
+        text: t('productAlreadyInWishlist'),
         confirmButtonColor: '#C8A97E'
       });
     }
@@ -84,14 +86,14 @@ const ProductCard = ({ product }) => {
               onClick={handleQuickOrder}
               className="p-2.5 rounded-full hover:scale-110 shadow-lg transition-all duration-300"
               style={{ backgroundColor: '#C8A97E', color: 'white' }}
-              title="طلب سريع"
+              title={t('quickOrder')}
             >
               <FiShoppingCart size={18} />
             </button>
             <button
               onClick={handleAddToWishlist}
               className="p-2.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-300 hover:scale-110 shadow-lg"
-              title="أضف للمفضلة"
+              title={t('addToWishlist')}
             >
               <FiHeart size={18} />
             </button>
@@ -107,7 +109,7 @@ const ProductCard = ({ product }) => {
           {/* Sold Out Badge */}
           {product.sold_out && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <span className="text-white text-lg font-bold">نفذت الكمية</span>
+              <span className="text-white text-lg font-bold">{t('soldOut')}</span>
             </div>
           )}
         </div>
@@ -123,7 +125,7 @@ const ProductCard = ({ product }) => {
               <span className="text-xl font-bold" style={{ color: '#C8A97E' }}>
                 {product.price.toLocaleString()}
               </span>
-              <span className="text-xs text-gray-500 font-medium">جنيه</span>
+              <span className="text-xs text-gray-500 font-medium">{t('egp')}</span>
             </div>
           </div>
         </div>

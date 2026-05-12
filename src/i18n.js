@@ -99,7 +99,44 @@ const resources = {
       "noProducts": "لا توجد منتجات",
       "tryDifferentSearch": "جرب البحث بكلمات مختلفة أو غير الفلتر",
       "oneProduct": "منتج واحد",
-      "products": "منتج"
+      "products": "منتج",
+      
+      // Cart & Checkout
+      "cart": "السلة",
+      "emptyCart": "السلة فارغة",
+      "noProductsInCart": "لا توجد منتجات في السلة",
+      "backToShopping": "العودة للتسوق",
+      "removeFromCart": "حذف من السلة",
+      "quantity": "الكمية",
+      "price": "السعر",
+      "total": "الإجمالي",
+      "checkout": "إتمام الطلب",
+      "backToCart": "العودة للسلة",
+      "orderSummary": "ملخص الطلب",
+      "deliveryInfo": "بيانات التوصيل",
+      "fullName": "الاسم الكامل",
+      "phone1Label": "رقم الهاتف الأول",
+      "phone2Label": "رقم الهاتف الثاني (اختياري)",
+      "subtotal": "المجموع الفرعي",
+      "deliveryFee": "رسوم التوصيل",
+      "finalTotal": "الإجمالي",
+      "confirmOrder": "تأكيد الطلب",
+      "sending": "جاري الإرسال...",
+      "secureTransaction": "معاملة آمنة - سيتم التواصل معك لتأكيد الطلب",
+      "soldOut": "نفذت الكمية",
+      "egp": "جنيه",
+      "missingData": "بيانات ناقصة",
+      "fillAllFields": "يرجى ملء جميع البيانات المطلوبة",
+      "orderSent": "تم إرسال الطلب!",
+      "orderSuccess": "تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً.",
+      "error": "خطأ",
+      "orderError": "حدث خطأ في إرسال الطلب. يرجى المحاولة مرة أخرى.",
+      "addedToWishlist": "تمت الإضافة!",
+      "productAddedToWishlist": "تم إضافة المنتج إلى المفضلة ❤️",
+      "alreadyInWishlist": "موجود بالفعل",
+      "productAlreadyInWishlist": "المنتج موجود بالفعل في المفضلة",
+      "enterFullName": "أدخل اسمك الكامل",
+      "enterDetailedAddress": "أدخل عنوانك بالتفصيل"
     }
   },
   en: {
@@ -199,7 +236,44 @@ const resources = {
       "noProducts": "No Products Found",
       "tryDifferentSearch": "Try different keywords or change the filter",
       "oneProduct": "One Product",
-      "products": "Products"
+      "products": "Products",
+      
+      // Cart & Checkout
+      "cart": "Cart",
+      "emptyCart": "Cart is Empty",
+      "noProductsInCart": "No products to purchase",
+      "backToShopping": "Back to Shopping",
+      "removeFromCart": "Remove from Cart",
+      "quantity": "Quantity",
+      "price": "Price",
+      "total": "Total",
+      "checkout": "Checkout",
+      "backToCart": "Back to Cart",
+      "orderSummary": "Order Summary",
+      "deliveryInfo": "Delivery Information",
+      "fullName": "Full Name",
+      "phone1Label": "Phone Number 1",
+      "phone2Label": "Phone Number 2 (Optional)",
+      "subtotal": "Subtotal",
+      "deliveryFee": "Delivery Fee",
+      "finalTotal": "Total",
+      "confirmOrder": "Confirm Order",
+      "sending": "Sending...",
+      "secureTransaction": "Secure Transaction - We will contact you to confirm the order",
+      "soldOut": "Sold Out",
+      "egp": "EGP",
+      "missingData": "Missing Data",
+      "fillAllFields": "Please fill in all required fields",
+      "orderSent": "Order Sent!",
+      "orderSuccess": "Your order has been sent successfully! We will contact you soon.",
+      "error": "Error",
+      "orderError": "An error occurred while sending the order. Please try again.",
+      "addedToWishlist": "Added!",
+      "productAddedToWishlist": "Product added to wishlist ❤️",
+      "alreadyInWishlist": "Already Added",
+      "productAlreadyInWishlist": "Product is already in wishlist",
+      "enterFullName": "Enter your full name",
+      "enterDetailedAddress": "Enter your detailed address"
     }
   }
 };
@@ -208,8 +282,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'ar',
-    fallbackLng: 'ar',
+    lng: 'en',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     }

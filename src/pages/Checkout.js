@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiShoppingBag, FiTruck } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -50,8 +52,8 @@ const Checkout = () => {
     if (!formData.name || !formData.address || !formData.phone1) {
       Swal.fire({
         icon: 'warning',
-        title: 'بيانات ناقصة',
-        text: 'يرجى ملء جميع البيانات المطلوبة',
+        title: t('missingData'),
+        text: t('fillAllFields'),
         confirmButtonColor: '#C8A97E'
       });
       return;
@@ -111,8 +113,8 @@ const Checkout = () => {
       
       Swal.fire({
         icon: 'success',
-        title: 'تم إرسال الطلب!',
-        text: 'تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً.',
+        title: t('orderSent'),
+        text: t('orderSuccess'),
         confirmButtonColor: '#C8A97E'
       }).then(() => {
         navigate('/');
@@ -121,8 +123,8 @@ const Checkout = () => {
       console.error('Error submitting order:', error);
       Swal.fire({
         icon: 'error',
-        title: 'خطأ',
-        text: 'حدث خطأ في إرسال الطلب. يرجى المحاولة مرة أخرى.',
+        title: t('error'),
+        text: t('orderError'),
         confirmButtonColor: '#C8A97E'
       });
     } finally {
@@ -135,13 +137,13 @@ const Checkout = () => {
       <div className="pt-20 pb-20 min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center animate-fade-in-up">
           <div className="text-6xl text-gray-300 mb-4">🛒</div>
-          <h2 className="text-2xl font-bold text-gray-600 mb-2">السلة فارغة</h2>
-          <p className="text-gray-500 mb-6">لا توجد منتجات للشراء</p>
+          <h2 className="text-2xl font-bold text-gray-600 mb-2">{t('emptyCart')}</h2>
+          <p className="text-gray-500 mb-6">{t('noProductsInCart')}</p>
           <button
             onClick={() => navigate('/')}
             className="btn-primary"
           >
-            العودة للتسوق
+            {t('backToShopping')}
           </button>
         </div>
       </div>
@@ -158,7 +160,7 @@ const Checkout = () => {
             className="flex items-center space-x-2 rtl:space-x-reverse text-beige hover:text-dark-beige transition-colors duration-300 group"
           >
             <FiArrowLeft className="group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform duration-300" />
-            <span className="font-semibold">العودة للسلة</span>
+            <span className="font-semibold">{t('backToCart')}</span>
           </button>
         </div>
 
@@ -170,7 +172,7 @@ const Checkout = () => {
                 <div className="w-12 h-12 bg-gradient-to-br from-beige to-dark-beige rounded-xl flex items-center justify-center">
                   <FiShoppingBag className="text-white text-xl" />
                 </div>
-                <h2 className="text-2xl font-bold text-text-dark">ملخص الطلب</h2>
+                <h2 className="text-2xl font-bold text-text-dark">{t('orderSummary')}</h2>
               </div>
 
               {/* Cart Items */}
@@ -201,8 +203,8 @@ const Checkout = () => {
                         )}
                         
                         <div className="flex items-center justify-between text-sm mt-2">
-                          <span className="text-gray-600">الكمية: {item.quantity}</span>
-                          <span className="font-bold text-beige">{(item.price * item.quantity).toLocaleString()} EGP</span>
+                          <span className="text-gray-600">{t('quantity')}: {item.quantity}</span>
+                          <span className="font-bold text-beige">{(item.price * item.quantity).toLocaleString()} {t('egp')}</span>
                         </div>
                       </div>
                     </div>
@@ -213,20 +215,20 @@ const Checkout = () => {
               {/* Price Breakdown */}
               <div className="border-t border-gray-200 pt-4 space-y-2">
                 <div className="flex justify-between text-base">
-                  <span className="text-gray-600">المجموع الفرعي:</span>
-                  <span className="font-semibold text-text-dark">{getSubtotal().toLocaleString()} EGP</span>
+                  <span className="text-gray-600">{t('subtotal')}:</span>
+                  <span className="font-semibold text-text-dark">{getSubtotal().toLocaleString()} {t('egp')}</span>
                 </div>
                 <div className="flex justify-between text-base">
                   <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <FiTruck className="text-beige" />
-                    <span className="text-gray-600">رسوم التوصيل:</span>
+                    <span className="text-gray-600">{t('deliveryFee')}:</span>
                   </div>
-                  <span className="font-semibold text-text-dark">{getDeliveryFee().toLocaleString()} EGP</span>
+                  <span className="font-semibold text-text-dark">{getDeliveryFee().toLocaleString()} {t('egp')}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-2">
                   <div className="flex justify-between text-xl font-bold">
-                    <span className="text-text-dark">الإجمالي:</span>
-                    <span className="text-beige">{getTotal().toLocaleString()} EGP</span>
+                    <span className="text-text-dark">{t('finalTotal')}:</span>
+                    <span className="text-beige">{getTotal().toLocaleString()} {t('egp')}</span>
                   </div>
                 </div>
               </div>
@@ -236,13 +238,13 @@ const Checkout = () => {
           {/* Customer Information Form - Takes 2 columns */}
           <div className="lg:col-span-2 animate-fade-in-right">
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-beige border-opacity-20">
-              <h2 className="text-2xl font-bold text-text-dark mb-6">بيانات التوصيل</h2>
+              <h2 className="text-2xl font-bold text-text-dark mb-6">{t('deliveryInfo')}</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div className="animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
                   <label className="block text-text-dark font-semibold mb-2">
-                    الاسم الكامل *
+                    {t('fullName')} *
                   </label>
                   <input
                     type="text"
@@ -251,14 +253,14 @@ const Checkout = () => {
                     onChange={handleInputChange}
                     required
                     className="input-field"
-                    placeholder="أدخل اسمك الكامل"
+                    placeholder={t('enterFullName')}
                   />
                 </div>
 
                 {/* Address */}
                 <div className="animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                   <label className="block text-text-dark font-semibold mb-2">
-                    العنوان *
+                    {t('address')} *
                   </label>
                   <textarea
                     name="address"
@@ -267,14 +269,14 @@ const Checkout = () => {
                     required
                     rows="3"
                     className="input-field resize-none"
-                    placeholder="أدخل عنوانك بالتفصيل"
+                    placeholder={t('enterDetailedAddress')}
                   />
                 </div>
 
                 {/* Phone 1 */}
                 <div className="animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                   <label className="block text-text-dark font-semibold mb-2">
-                    رقم الهاتف الأول *
+                    {t('phone1Label')} *
                   </label>
                   <input
                     type="tel"
@@ -290,7 +292,7 @@ const Checkout = () => {
                 {/* Phone 2 */}
                 <div className="animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                   <label className="block text-text-dark font-semibold mb-2">
-                    رقم الهاتف الثاني (اختياري)
+                    {t('phone2Label')}
                   </label>
                   <input
                     type="tel"
@@ -316,10 +318,10 @@ const Checkout = () => {
                     {loading ? (
                       <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
                         <div className="loading-spinner w-6 h-6"></div>
-                        <span>جاري الإرسال...</span>
+                        <span>{t('sending')}</span>
                       </div>
                     ) : (
-                      'تأكيد الطلب - BUY NOW'
+                      `${t('confirmOrder')} - ${t('buyNow')}`
                     )}
                   </button>
                 </div>
@@ -330,7 +332,7 @@ const Checkout = () => {
                 <div className="flex items-center space-x-2 rtl:space-x-reverse text-green-700">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-sm font-medium">
-                    معاملة آمنة - سيتم التواصل معك لتأكيد الطلب
+                    {t('secureTransaction')}
                   </span>
                 </div>
               </div>
