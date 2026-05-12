@@ -1,5 +1,49 @@
 const mongoose = require('mongoose');
-const Product = require('../../server/models/Product');
+
+// Product Schema
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  category: {
+    type: String,
+    required: true
+  },
+  subcategory: {
+    type: String,
+    default: ''
+  },
+  battery: {
+    type: String,
+    default: ''
+  },
+  images: [{
+    type: String
+  }],
+  sold_out: {
+    type: Boolean,
+    default: false
+  }
+}, {
+  timestamps: true
+});
+
+let Product;
+try {
+  Product = mongoose.model('Product');
+} catch {
+  Product = mongoose.model('Product', productSchema);
+}
 
 let cachedDb = null;
 

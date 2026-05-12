@@ -33,7 +33,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="overflow-hidden pt-16">
+    <div className="overflow-hidden">
       <HeroSection />
       
       <div 

@@ -1,5 +1,66 @@
-const { connectDB, getDB } = require('../_db');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+
+// Product Schema
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  category: {
+    type: String,
+    required: true
+  },
+  subcategory: {
+    type: String,
+    default: ''
+  },
+  battery: {
+    type: String,
+    default: ''
+  },
+  images: [{
+    type: String
+  }],
+  sold_out: {
+    type: Boolean,
+    default: false
+  }
+}, {
+  timestamps: true
+});
+
+let Product;
+try {
+  Product = mongoose.model('Product');
+} catch {
+  Product = mongoose.model('Product', productSchema);
+}
+
+let cachedDb = null;
+
+const connectDB = async () => {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  const db = await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  cachedDb = db;
+  return db;
+};
 
 const verifyToken = (req) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -24,16 +85,15 @@ module.exports = async (req, res) => {
 
   try {
     await connectDB();
-    const db = getDB();
     const { id } = req.query;
 
     // GET single product by ID
     if (req.method === 'GET') {
-      db.get('SELECT * FROM products WHERE id = ?', [id], (err, row) => {
-        if (err) return res.status(500).json({ message: 'خطأ في جلب المنتج' });
-        if (!row) return res.status(404).json({ message: 'المنتج غير موجود' });
-        res.json({ ...row, images: row.images ? JSON.parse(row.images) : [] });
-      });
+      const product = await Product.findById(id);
+      if (!product) {
+        return res.status(404).json({ message: 'المنتج غير موجود' });
+      }
+      res.json(product);
     }
     // PUT update product (Admin only)
     else if (req.method === 'PUT') {
@@ -45,26 +105,37 @@ module.exports = async (req, res) => {
         return res.status(400).json({ message: 'الاسم والسعر والفئة مطلوبة' });
       }
 
-      db.run(
-        'UPDATE products SET name=?, price=?, description=?, category=?, subcategory=?, battery=?, images=?, updated_at=CURRENT_TIMESTAMP WHERE id=?',
-        [name, parseFloat(price), description || '', category, subcategory || '', battery || '', JSON.stringify(images || []), id],
-        function(err) {
-          if (err) return res.status(500).json({ message: 'خطأ في تحديث المنتج' });
-          if (this.changes === 0) return res.status(404).json({ message: 'المنتج غير موجود' });
-          res.json({ message: 'تم تحديث المنتج بنجاح' });
-        }
+      const product = await Product.findByIdAndUpdate(
+        id,
+        {
+          name,
+          price: parseFloat(price),
+          description: description || '',
+          category,
+          subcategory: subcategory || '',
+          battery: battery || '',
+          images: images || []
+        },
+        { new: true }
       );
+
+      if (!product) {
+        return res.status(404).json({ message: 'المنتج غير موجود' });
+      }
+
+      res.json({ message: 'تم تحديث المنتج بنجاح', product });
     }
     // DELETE product (Admin only)
     else if (req.method === 'DELETE') {
       const user = verifyToken(req);
       if (!user) return res.status(401).json({ message: 'غير مصرح' });
 
-      db.run('DELETE FROM products WHERE id = ?', [id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في حذف المنتج' });
-        if (this.changes === 0) return res.status(404).json({ message: 'المنتج غير موجود' });
-        res.json({ message: 'تم حذف المنتج بنجاح' });
-      });
+      const product = await Product.findByIdAndDelete(id);
+      if (!product) {
+        return res.status(404).json({ message: 'المنتج غير موجود' });
+      }
+
+      res.json({ message: 'تم حذف المنتج بنجاح' });
     } else {
       res.status(405).json({ message: 'Method not allowed' });
     }

@@ -1,5 +1,93 @@
-const { connectDB, getDB } = require('../_db');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+
+// Request Schema
+const requestSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    required: true,
+    enum: ['banking', 'electronic']
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  phone1: {
+    type: String,
+    required: true
+  },
+  phone2: {
+    type: String,
+    default: ''
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  amount: {
+    type: Number
+  },
+  service_type: {
+    type: String
+  },
+  bank_type: {
+    type: String
+  },
+  account_type: {
+    type: String
+  },
+  sender_account: {
+    type: String
+  },
+  transfer_to: {
+    type: String
+  },
+  recipient_account: {
+    type: String
+  },
+  recipient_name: {
+    type: String
+  },
+  machine_type: {
+    type: String
+  },
+  merchant_number: {
+    type: String
+  },
+  screenshot: {
+    type: String
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'completed', 'rejected'],
+    default: 'pending'
+  }
+}, {
+  timestamps: true
+});
+
+let Request;
+try {
+  Request = mongoose.model('Request');
+} catch {
+  Request = mongoose.model('Request', requestSchema);
+}
+
+let cachedDb = null;
+
+const connectDB = async () => {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  const db = await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  cachedDb = db;
+  return db;
+};
 
 const verifyToken = (req) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -24,7 +112,6 @@ module.exports = async (req, res) => {
 
   try {
     await connectDB();
-    const db = getDB();
     const { id } = req.query;
     const user = verifyToken(req);
     
@@ -32,11 +119,11 @@ module.exports = async (req, res) => {
 
     // GET single request
     if (req.method === 'GET') {
-      db.get('SELECT * FROM requests WHERE id = ?', [id], (err, row) => {
-        if (err) return res.status(500).json({ message: 'خطأ في جلب الطلب' });
-        if (!row) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json(row);
-      });
+      const request = await Request.findById(id);
+      if (!request) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
+      }
+      res.json(request);
     }
     // PATCH update request status
     else if (req.method === 'PATCH') {
@@ -47,24 +134,31 @@ module.exports = async (req, res) => {
         return res.status(400).json({ message: 'حالة الطلب غير صالحة' });
       }
 
-      db.run('UPDATE requests SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في تحديث حالة الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم تحديث حالة الطلب بنجاح', status });
-      });
+      const request = await Request.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }
+      );
+
+      if (!request) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
+      }
+
+      res.json({ message: 'تم تحديث حالة الطلب بنجاح', request });
     }
     // DELETE request
     else if (req.method === 'DELETE') {
-      db.run('DELETE FROM requests WHERE id = ?', [id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في حذف الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم حذف الطلب بنجاح' });
-      });
+      const request = await Request.findByIdAndDelete(id);
+      if (!request) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
+      }
+
+      res.json({ message: 'تم حذف الطلب بنجاح' });
     } else {
       res.status(405).json({ message: 'Method not allowed' });
     }
   } catch (error) {
-    console.error('Request error:', error);
+    console.error('Request [id] error:', error);
     res.status(500).json({ message: 'خطأ في الخادم' });
   }
 };

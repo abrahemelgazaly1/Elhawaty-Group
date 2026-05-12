@@ -1,5 +1,83 @@
-const { connectDB, getDB } = require('../_db');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+
+// Order Schema
+const orderSchema = new mongoose.Schema({
+  product_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  },
+  product_name: {
+    type: String,
+    required: true
+  },
+  product_price: {
+    type: Number,
+    required: true
+  },
+  product_image: {
+    type: String
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  customer_name: {
+    type: String,
+    required: true
+  },
+  customer_address: {
+    type: String,
+    required: true
+  },
+  customer_phone1: {
+    type: String,
+    required: true
+  },
+  customer_phone2: {
+    type: String,
+    default: ''
+  },
+  delivery_fee: {
+    type: Number,
+    default: 120
+  },
+  total_price: {
+    type: Number,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+    default: 'pending'
+  }
+}, {
+  timestamps: true
+});
+
+let Order;
+try {
+  Order = mongoose.model('Order');
+} catch {
+  Order = mongoose.model('Order', orderSchema);
+}
+
+let cachedDb = null;
+
+const connectDB = async () => {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  const db = await mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  cachedDb = db;
+  return db;
+};
 
 const verifyToken = (req) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -24,7 +102,6 @@ module.exports = async (req, res) => {
 
   try {
     await connectDB();
-    const db = getDB();
     const { id } = req.query;
 
     // GET single order by ID (Admin only)
@@ -32,46 +109,11 @@ module.exports = async (req, res) => {
       const user = verifyToken(req);
       if (!user) return res.status(401).json({ message: 'غير مصرح' });
 
-      db.get('SELECT * FROM orders WHERE id = ?', [id], (err, row) => {
-        if (err) return res.status(500).json({ message: 'خطأ في جلب الطلب' });
-        if (!row) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json(row);
-      });
-    }
-    // PATCH update order status
-    else if (req.method === 'PATCH') {
-      const { status } = req.body;
-      const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
-      
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({ message: 'حالة الطلب غير صالحة' });
+      const order = await Order.findById(id);
+      if (!order) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
       }
-
-      db.run('UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في تحديث حالة الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم تحديث حالة الطلب بنجاح', status });
-      });
-    }
-    // DELETE order
-    else if (req.method === 'DELETE') {
-      db.run('DELETE FROM orders WHERE id = ?', [id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في حذف الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم حذف الطلب بنجاح' });
-      });
-    } else {
-      res.status(405).json({ message: 'Method not allowed' });
-    }
-  } catch (error) {
-    console.error('Order error:', error);
-    res.status(500).json({ message: 'خطأ في الخادم' });
-  }
-};
-(500).json({ message: 'خطأ في جلب الطلب' });
-        if (!row) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json(row);
-      });
+      res.json(order);
     }
     // PATCH update order status (Admin only)
     else if (req.method === 'PATCH') {
@@ -85,22 +127,29 @@ module.exports = async (req, res) => {
         return res.status(400).json({ message: 'حالة الطلب غير صالحة' });
       }
 
-      db.run('UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في تحديث حالة الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم تحديث حالة الطلب بنجاح' });
-      });
+      const order = await Order.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }
+      );
+
+      if (!order) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
+      }
+
+      res.json({ message: 'تم تحديث حالة الطلب بنجاح', order });
     }
     // DELETE order (Admin only)
     else if (req.method === 'DELETE') {
       const user = verifyToken(req);
       if (!user) return res.status(401).json({ message: 'غير مصرح' });
 
-      db.run('DELETE FROM orders WHERE id = ?', [id], function(err) {
-        if (err) return res.status(500).json({ message: 'خطأ في حذف الطلب' });
-        if (this.changes === 0) return res.status(404).json({ message: 'الطلب غير موجود' });
-        res.json({ message: 'تم حذف الطلب بنجاح' });
-      });
+      const order = await Order.findByIdAndDelete(id);
+      if (!order) {
+        return res.status(404).json({ message: 'الطلب غير موجود' });
+      }
+
+      res.json({ message: 'تم حذف الطلب بنجاح' });
     } else {
       res.status(405).json({ message: 'Method not allowed' });
     }
