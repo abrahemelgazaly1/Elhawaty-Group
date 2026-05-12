@@ -34,7 +34,7 @@ const BottomNavbar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-beige to-dark-beige shadow-2xl z-40 border-t-4 border-white border-opacity-20">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-beige to-dark-beige shadow-2xl z-50 border-t-4 border-white border-opacity-20">
       <div className="flex items-center justify-around py-2">
         <button
           onClick={() => navigate('/cart')}
