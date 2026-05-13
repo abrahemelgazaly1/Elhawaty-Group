@@ -79,6 +79,7 @@ const ElectronicTransfer = () => {
     try {
       // إرسال البيانات إلى قاعدة البيانات
       const requestData = {
+        type: 'electronic',
         name: formData.name,
         phone1: formData.phone1,
         phone2: formData.phone2,
@@ -94,7 +95,7 @@ const ElectronicTransfer = () => {
         screenshot: screenshot || '' // Base64 image
       };
 
-      const response = await fetch('/api/requests/electronic', {
+      const response = await fetch('/api/requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

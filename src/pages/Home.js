@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import HeroSection from '../components/HeroSection';
-import AboutSection from '../components/AboutSection';
 import ServicesSection from '../components/ServicesSection';
 import { initScrollAnimations } from '../utils/animations';
 
@@ -35,13 +34,6 @@ const Home = () => {
   return (
     <div className="overflow-hidden">
       <HeroSection />
-      
-      <div 
-        id="about" 
-        className={`section-animation ${visibleSections.has('about') ? 'visible' : ''}`}
-      >
-        <AboutSection />
-      </div>
       
       <div 
         id="services" 

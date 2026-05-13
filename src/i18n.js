@@ -136,7 +136,24 @@ const resources = {
       "alreadyInWishlist": "موجود بالفعل",
       "productAlreadyInWishlist": "المنتج موجود بالفعل في المفضلة",
       "enterFullName": "أدخل اسمك الكامل",
-      "enterDetailedAddress": "أدخل عنوانك بالتفصيل"
+      "enterDetailedAddress": "أدخل عنوانك بالتفصيل",
+      
+      // Complaint Form
+      "sendComplaint": "أرسل شكوى",
+      "complaintDescription": "اكتب شكواك أو رأيك أو رسالتك هنا",
+      "yourMessage": "رسالتك",
+      "writeYourMessage": "اكتب شكواك أو رأيك أو رسالتك هنا",
+      "sendNow": "أرسل الآن",
+      "newComplaint": "شكوى/رسالة جديدة",
+      "message": "الرسالة",
+      "sentSuccessfully": "تم الإرسال بنجاح!",
+      "thankYouForMessage": "شكراً لرسالتك. سيتم التواصل معك قريباً.",
+      "errorSendingMessage": "حدث خطأ في إرسال الرسالة. حاول مرة أخرى.",
+      "enterYourName": "أدخل اسمك",
+      "phone": "رقم الهاتف",
+      
+      // Testimonials
+      "customerReviews": "آراء عملائنا"
     }
   },
   en: {
@@ -273,7 +290,24 @@ const resources = {
       "alreadyInWishlist": "Already Added",
       "productAlreadyInWishlist": "Product is already in wishlist",
       "enterFullName": "Enter your full name",
-      "enterDetailedAddress": "Enter your detailed address"
+      "enterDetailedAddress": "Enter your detailed address",
+      
+      // Complaint Form
+      "sendComplaint": "Send Complaint",
+      "complaintDescription": "Write your complaint, opinion, or message here",
+      "yourMessage": "Your Message",
+      "writeYourMessage": "Write your complaint, opinion, or message here",
+      "sendNow": "Send Now",
+      "newComplaint": "New Complaint/Message",
+      "message": "Message",
+      "sentSuccessfully": "Sent Successfully!",
+      "thankYouForMessage": "Thank you for your message. We will contact you soon.",
+      "errorSendingMessage": "An error occurred while sending the message. Please try again.",
+      "enterYourName": "Enter your name",
+      "phone": "Phone Number",
+      
+      // Testimonials
+      "customerReviews": "Customer Reviews"
     }
   }
 };

@@ -27,12 +27,13 @@ const BankingTransactions = () => {
     
     try {
       // إرسال البيانات إلى قاعدة البيانات
-      const response = await fetch('/api/requests/banking', {
+      const response = await fetch('/api/requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          type: 'banking',
           name: formData.name,
           phone1: formData.phone1,
           phone2: formData.phone2,

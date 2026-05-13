@@ -16,6 +16,7 @@ import Wishlist from './pages/Wishlist';
 import Footer from './components/Footer';
 import AdminLogin from './admin/AdminLogin';
 import AdminDashboard from './admin/AdminDashboard';
+import About from './pages/About';
 
 function App() {
   const { i18n } = useTranslation();
@@ -41,6 +42,7 @@ function App() {
               <main className="min-h-screen">
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
                   <Route path="/category/:categoryName" element={<CategoryPage />} />
                   <Route path="/product/:productId" element={<ProductDetails />} />
                   <Route path="/banking-transactions" element={<BankingTransactions />} />

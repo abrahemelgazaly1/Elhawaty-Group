@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiMapPin, FiClock } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import ComplaintForm from './ComplaintForm';
+import TestimonialsSlider from './TestimonialsSlider';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -9,6 +11,12 @@ const Footer = () => {
   return (
     <footer className="bg-white mb-16">
       <div className="container mx-auto px-4">
+        {/* Complaint Form */}
+        <ComplaintForm />
+        
+        {/* Testimonials Slider */}
+        <TestimonialsSlider />
+        
         {/* Map Section */}
         <div className="py-12">
           <div className="bg-gray-50 rounded-3xl p-4 shadow-xl overflow-hidden max-w-6xl mx-auto">

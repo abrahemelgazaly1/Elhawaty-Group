@@ -12,7 +12,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-center justify-center text-center overflow-hidden mt-16" style={{ height: '65vh', minHeight: '500px' }}>
+    <section className="relative flex items-center justify-center text-center overflow-hidden" style={{ height: '65vh', minHeight: '500px', marginTop: '64px' }}>
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -29,12 +29,12 @@ const HeroSection = () => {
             {t('ourServices')}
           </button>
           
-          <button
-            onClick={() => scrollToSection('about')}
-            className="bg-white text-beige px-5 py-2 rounded-lg font-medium text-sm transition-all duration-500 hover:bg-opacity-90 hover:scale-105 hover:shadow-xl border-2 border-beige whitespace-nowrap"
+          <a
+            href="/about"
+            className="bg-white text-beige px-5 py-2 rounded-lg font-medium text-sm transition-all duration-500 hover:bg-opacity-90 hover:scale-105 hover:shadow-xl border-2 border-beige whitespace-nowrap inline-block"
           >
             {t('aboutUs')}
-          </button>
+          </a>
         </div>
       </div>
     </section>
