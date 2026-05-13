@@ -28,7 +28,7 @@ const Wishlist = () => {
       cancelButtonText: 'إلغاء'
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedWishlist = wishlist.filter(item => item.id !== productId);
+        const updatedWishlist = wishlist.filter(item => (item._id || item.product_id || item.id) !== productId);
         localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
         setWishlist(updatedWishlist);
         window.dispatchEvent(new Event('wishlistUpdated'));
@@ -46,7 +46,8 @@ const Wishlist = () => {
 
   const addToCart = (product) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+    const productId = product._id || product.product_id || product.id;
+    const existingItemIndex = cartItems.findIndex(item => (item._id || item.product_id || item.id) === productId);
     
     if (existingItemIndex > -1) {
       cartItems[existingItemIndex].quantity += 1;
@@ -121,7 +122,7 @@ const Wishlist = () => {
                 <div 
                   className="relative overflow-hidden cursor-pointer" 
                   style={{ height: '180px', backgroundColor: '#f5f5f5' }}
-                  onClick={() => navigate(`/product/${product.id}`)}
+                  onClick={() => navigate(`/product/${product._id || product.product_id || product.id}`)}
                 >
                   {productImage ? (
                     <img 
@@ -146,7 +147,7 @@ const Wishlist = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeFromWishlist(product.id);
+                      removeFromWishlist(product._id || product.product_id || product.id);
                     }}
                     className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-300 hover:scale-110 shadow-lg"
                     title="إزالة من المفضلة"
@@ -167,7 +168,7 @@ const Wishlist = () => {
                   <h3 
                     className="font-bold mb-2 text-sm line-clamp-2 cursor-pointer hover:text-beige transition-colors"
                     style={{ color: '#1F1F1F', minHeight: '2.5rem' }}
-                    onClick={() => navigate(`/product/${product.id}`)}
+                    onClick={() => navigate(`/product/${product._id || product.product_id || product.id}`)}
                   >
                     {product.name}
                   </h3>

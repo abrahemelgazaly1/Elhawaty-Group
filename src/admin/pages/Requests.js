@@ -218,7 +218,7 @@ const Requests = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredRequests.map((request) => (
-            <div key={request.id} className="bg-white rounded-lg shadow-lg p-4 md:p-6">
+            <div key={request._id || request.id} className="bg-white rounded-lg shadow-lg p-4 md:p-6">
               {/* Request Header */}
               <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4 space-y-3 md:space-y-0">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -230,7 +230,7 @@ const Requests = () => {
                       {getTypeText(request.type)}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      طلب رقم #{request.id}
+                      طلب رقم #{request._id || request.id}
                     </p>
                     <p className="text-xs text-gray-400">
                       {formatDate(request.created_at)}
@@ -294,10 +294,10 @@ const Requests = () => {
                       <div className="mt-3">
                         <p className="font-medium mb-2">📸 صورة السكرين شوت:</p>
                         <img
-                          src={`http://localhost:5000${request.screenshot}`}
+                          src={request.screenshot}
                           alt="Screenshot"
                           className="max-w-full h-auto rounded-lg border border-gray-300 cursor-pointer hover:opacity-90 transition-opacity"
-                          onClick={() => window.open(`http://localhost:5000${request.screenshot}`, '_blank')}
+                          onClick={() => window.open(request.screenshot, '_blank')}
                         />
                       </div>
                     )}
@@ -318,13 +318,13 @@ const Requests = () => {
                 {request.status === 'pending' && (
                   <>
                     <button
-                      onClick={() => updateRequestStatus(request.id, 'approved')}
+                      onClick={() => updateRequestStatus(request._id || request.id, 'approved')}
                       className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm"
                     >
                       موافقة
                     </button>
                     <button
-                      onClick={() => updateRequestStatus(request.id, 'rejected')}
+                      onClick={() => updateRequestStatus(request._id || request.id, 'rejected')}
                       className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm"
                     >
                       رفض
@@ -334,7 +334,7 @@ const Requests = () => {
 
                 {request.status === 'approved' && (
                   <button
-                    onClick={() => updateRequestStatus(request.id, 'completed')}
+                    onClick={() => updateRequestStatus(request._id || request.id, 'completed')}
                     className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 text-sm"
                   >
                     مكتمل
@@ -342,7 +342,7 @@ const Requests = () => {
                 )}
 
                 <button
-                  onClick={() => deleteRequest(request.id, request.name)}
+                  onClick={() => deleteRequest(request._id || request.id, request.name)}
                   className="px-3 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors duration-200 flex items-center space-x-1 rtl:space-x-reverse text-sm"
                 >
                   <FiTrash2 size={16} />
@@ -360,7 +360,7 @@ const Requests = () => {
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">تفاصيل الطلب #{selectedRequest.id}</h2>
+                <h2 className="text-xl font-bold text-gray-800">تفاصيل الطلب #{selectedRequest._id || selectedRequest.id}</h2>
                 <button
                   onClick={() => setSelectedRequest(null)}
                   className="text-gray-500 hover:text-gray-700"
@@ -481,7 +481,7 @@ const Requests = () => {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">صورة السكرين شوت</label>
                         <img
-                          src={`http://localhost:5000${selectedRequest.screenshot}`}
+                          src={selectedRequest.screenshot}
                           alt="Screenshot"
                           className="max-w-full h-auto rounded-lg border"
                         />

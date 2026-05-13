@@ -189,12 +189,12 @@ const ManageProducts = () => {
           </div>
         ) : (
           filteredProducts.map((product) => (
-            <div key={product.id} className="bg-white rounded-lg shadow-lg p-4 md:p-6">
+            <div key={product._id || product.id} className="bg-white rounded-lg shadow-lg p-4 md:p-6">
               <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 rtl:md:space-x-reverse">
                 {/* Product Image */}
                 <div className="flex-shrink-0 mx-auto md:mx-0">
                   <img
-                    src={product.images[0] ? `http://localhost:5000${product.images[0]}` : '/placeholder-image.jpg'}
+                    src={product.images[0] || '/placeholder-image.jpg'}
                     alt={product.name}
                     className="w-24 h-24 md:w-20 md:h-20 object-cover rounded-lg"
                     onError={(e) => {
@@ -228,7 +228,7 @@ const ManageProducts = () => {
                 <div className="hidden md:flex items-center space-x-2 rtl:space-x-reverse">
                   {/* Edit Button */}
                   <button
-                    onClick={() => navigate(`/admin/dashboard/edit-product/${product.id}`)}
+                    onClick={() => navigate(`/admin/dashboard/edit-product/${product._id || product.id}`)}
                     className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
                     title="تعديل"
                   >
@@ -237,7 +237,7 @@ const ManageProducts = () => {
 
                   {/* Sold Out Toggle */}
                   <button
-                    onClick={() => handleToggleSoldOut(product.id, product.sold_out)}
+                    onClick={() => handleToggleSoldOut(product._id || product.id, product.sold_out)}
                     className={`p-2 rounded-lg transition-colors duration-200 ${
                       product.sold_out
                         ? 'bg-green-500 text-white hover:bg-green-600'
@@ -250,7 +250,7 @@ const ManageProducts = () => {
 
                   {/* Delete Button */}
                   <button
-                    onClick={() => handleDelete(product.id, product.name)}
+                    onClick={() => handleDelete(product._id || product.id, product.name)}
                     className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
                     title="حذف"
                   >
@@ -263,7 +263,7 @@ const ManageProducts = () => {
               <div className="flex md:hidden items-center justify-center gap-3 mt-4 pt-4 border-t border-gray-200">
                 {/* Edit Button */}
                 <button
-                  onClick={() => navigate(`/admin/dashboard/edit-product/${product.id}`)}
+                  onClick={() => navigate(`/admin/dashboard/edit-product/${product._id || product.id}`)}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
                 >
                   <FiEdit size={16} />
@@ -272,7 +272,7 @@ const ManageProducts = () => {
 
                 {/* Sold Out Toggle */}
                 <button
-                  onClick={() => handleToggleSoldOut(product.id, product.sold_out)}
+                  onClick={() => handleToggleSoldOut(product._id || product.id, product.sold_out)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
                     product.sold_out
                       ? 'bg-green-500 text-white hover:bg-green-600'
@@ -285,7 +285,7 @@ const ManageProducts = () => {
 
                 {/* Delete Button */}
                 <button
-                  onClick={() => handleDelete(product.id, product.name)}
+                  onClick={() => handleDelete(product._id || product.id, product.name)}
                   className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
                 >
                   <FiTrash2 size={16} />

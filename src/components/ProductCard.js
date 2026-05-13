@@ -19,7 +19,8 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
     
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    const existingItem = wishlist.find(item => item.id === product.id);
+    const productId = product._id || product.product_id || product.id;
+    const existingItem = wishlist.find(item => (item._id || item.product_id || item.id) === productId);
     
     if (!existingItem) {
       wishlist.push(product);
@@ -55,7 +56,7 @@ const ProductCard = ({ product }) => {
     <>
       <div 
         className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer border-2 border-gray-100 transition-all duration-300 hover:border-beige hover:shadow-xl group"
-        onClick={() => navigate(`/product/${product.product_id || product.id}`)}
+        onClick={() => navigate(`/product/${product._id || product.product_id || product.id}`)}
         style={{ minHeight: '300px' }}
       >
         {/* Product Image */}

@@ -29,8 +29,9 @@ const ProductDetails = () => {
         const relatedResponse = await axios.get('/api/products', {
           params: { category: response.data.category }
         });
+        const currentProductId = response.data._id || response.data.product_id || response.data.id;
         const related = relatedResponse.data
-          .filter(p => p.id !== parseInt(productId))
+          .filter(p => (p._id || p.product_id || p.id) !== currentProductId)
           .slice(0, 5);
         setRelatedProducts(related);
       } catch (error) {
@@ -45,7 +46,8 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+    const productId = product._id || product.product_id || product.id;
+    const existingItemIndex = cartItems.findIndex(item => (item._id || item.product_id || item.id) === productId);
     
     if (existingItemIndex > -1) {
       cartItems[existingItemIndex].quantity += quantity;
@@ -70,7 +72,8 @@ const ProductDetails = () => {
 
   const handleBuyNow = () => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+    const productId = product._id || product.product_id || product.id;
+    const existingItemIndex = cartItems.findIndex(item => (item._id || item.product_id || item.id) === productId);
     
     if (existingItemIndex > -1) {
       cartItems[existingItemIndex].quantity += quantity;
@@ -84,7 +87,8 @@ const ProductDetails = () => {
 
   const handleAddToWishlist = () => {
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    const existingItem = wishlist.find(item => item.id === product.id);
+    const productId = product._id || product.product_id || product.id;
+    const existingItem = wishlist.find(item => (item._id || item.product_id || item.id) === productId);
     
     if (!existingItem) {
       wishlist.push(product);
