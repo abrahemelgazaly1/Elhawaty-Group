@@ -29,6 +29,11 @@ const Orders = () => {
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
+    if (!orderId) {
+      setMessage('خطأ: معرف الطلب غير موجود');
+      return;
+    }
+    
     try {
       const token = localStorage.getItem('adminToken');
       await axios.patch(`/api/orders/${orderId}/status`, 
@@ -164,12 +169,12 @@ const Orders = () => {
       ) : (
         <div className="space-y-6">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-lg p-6">
+            <div key={order._id || order.id} className="bg-white rounded-lg shadow-lg p-6">
               {/* Order Header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">
-                    طلب رقم #{order.id}
+                    طلب رقم #{order._id || order.id}
                   </h3>
                   <p className="text-sm text-gray-500">
                     {formatDate(order.created_at)}
@@ -188,7 +193,7 @@ const Orders = () => {
                   <h4 className="font-semibold text-gray-800 mb-3">معلومات المنتج</h4>
                   <div className="flex items-center space-x-4 rtl:space-x-reverse mb-4">
                     <img
-                      src={order.product_image ? `http://localhost:5000${order.product_image}` : '/placeholder-image.jpg'}
+                      src={order.product_image || '/placeholder-image.jpg'}
                       alt={order.product_name}
                       className="w-16 h-16 object-cover rounded-lg"
                       onError={(e) => {
@@ -239,13 +244,13 @@ const Orders = () => {
                 {order.status === 'pending' && (
                   <>
                     <button
-                      onClick={() => updateOrderStatus(order.id, 'confirmed')}
+                      onClick={() => updateOrderStatus(order._id || order.id, 'confirmed')}
                       className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
                     >
                       تأكيد الطلب
                     </button>
                     <button
-                      onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                      onClick={() => updateOrderStatus(order._id || order.id, 'cancelled')}
                       className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
                     >
                       إلغاء الطلب
@@ -255,7 +260,7 @@ const Orders = () => {
                 
                 {order.status === 'confirmed' && (
                   <button
-                    onClick={() => updateOrderStatus(order.id, 'shipped')}
+                    onClick={() => updateOrderStatus(order._id || order.id, 'shipped')}
                     className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors duration-200"
                   >
                     تم الشحن
@@ -264,7 +269,7 @@ const Orders = () => {
                 
                 {order.status === 'shipped' && (
                   <button
-                    onClick={() => updateOrderStatus(order.id, 'delivered')}
+                    onClick={() => updateOrderStatus(order._id || order.id, 'delivered')}
                     className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
                   >
                     تم التسليم
@@ -273,7 +278,7 @@ const Orders = () => {
 
                 {/* Delete Button */}
                 <button
-                  onClick={() => deleteOrder(order.id, order.customer_name)}
+                  onClick={() => deleteOrder(order._id || order.id, order.customer_name)}
                   className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 flex items-center space-x-1 rtl:space-x-reverse"
                 >
                   <FiTrash2 size={16} />

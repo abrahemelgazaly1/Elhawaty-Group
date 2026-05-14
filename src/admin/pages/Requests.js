@@ -53,6 +53,11 @@ const Requests = () => {
   };
 
   const updateRequestStatus = async (requestId, newStatus) => {
+    if (!requestId) {
+      setMessage('خطأ: معرف الطلب غير موجود');
+      return;
+    }
+    
     try {
       const token = localStorage.getItem('adminToken');
       await axios.patch(`/api/requests/${requestId}/status`, 

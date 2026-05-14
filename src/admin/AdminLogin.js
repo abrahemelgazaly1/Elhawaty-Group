@@ -128,13 +128,6 @@ const AdminLogin = () => {
               {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
             </button>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-2">بيانات تجريبية:</p>
-            <p className="text-xs text-gray-500">البريد: admin@elhawty.com</p>
-            <p className="text-xs text-gray-500">كلمة المرور: admin123456</p>
-          </div>
         </div>
       </div>
     </div>

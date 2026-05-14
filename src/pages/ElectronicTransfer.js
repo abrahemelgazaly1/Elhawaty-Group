@@ -180,9 +180,9 @@ ${activeTab === 'transfer' ? '💳 طلب تحويل إلكتروني جديد' 
 
   const getAccountNumber = () => {
     if (formData.accountType === 'instaPay') {
-      return 'ELHAWTY123'; // يوزر إنستا باي
+      return 'ahmad.elhawty@instapay'; // يوزر إنستا باي
     } else {
-      return '01234567890'; // رقم فودافون كاش
+      return '01010600865'; // رقم فودافون كاش
     }
   };
 
