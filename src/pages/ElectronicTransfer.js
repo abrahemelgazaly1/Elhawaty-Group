@@ -307,24 +307,28 @@ ${activeTab === 'transfer' ? '💳 طلب تحويل إلكتروني جديد' 
                 </h3>
                 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-beige font-semibold mb-2 text-lg">
                     {formData.accountType === 'instaPay' ? 'يوزر إنستا باي للتحويل عليه:' : 'رقم فودافون كاش للتحويل عليه:'}
                   </label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <input
                       type="text"
                       value={getAccountNumber()}
                       readOnly
-                      className="input-field bg-gray-100 flex-1"
+                      className="w-full px-4 py-4 text-xl font-bold text-center bg-yellow-50 border-2 border-beige rounded-lg text-beige"
                     />
                     <button
                       type="button"
                       onClick={() => copyToClipboard(getAccountNumber())}
-                      className="p-3 bg-beige text-white rounded-lg hover:bg-opacity-90 transition-all"
+                      className="p-4 bg-beige text-white rounded-lg hover:bg-opacity-90 transition-all flex-shrink-0"
+                      title="نسخ الرقم"
                     >
-                      <FiCopy className="text-xl" />
+                      <FiCopy className="text-2xl" />
                     </button>
                   </div>
+                  <p className="text-sm text-gray-600 mt-2 text-center">
+                    📋 اضغط على زر النسخ لنسخ الرقم بسهولة
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
